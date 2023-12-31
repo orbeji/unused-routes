@@ -1,0 +1,7 @@
+services:
+  orbeji_unusedroutes.log_routes_subscriber:
+    class: Orbeji\UnusedRoutes\EventSubscriber\LogRoutesSubscriber
+    arguments:
+      $parameterBag: "@parameter_bag"
+    tags:
+      - { name: kernel.event_subscriber }

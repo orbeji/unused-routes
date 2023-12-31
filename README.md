@@ -1,4 +1,4 @@
-# NusedRoutes
+# UnusedRoutes
 
 ## Installation
 
@@ -11,7 +11,7 @@ of the Composer documentation.
 Open a command console, enter your project directory and execute:
 
 ```console
-$ composer require unusedRoutes
+$ composer require orbeji/unused-routes
 ```
 
 ### Applications that don't use Symfony Flex
@@ -22,7 +22,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```console
-$ composer require unusedRoutes
+$ composer require orbeji/unused-routes
 ```
 
 #### Step 2: Enable the Bundle
@@ -35,6 +35,6 @@ in the `config/bundles.php` file of your project:
 
 return [
     // ...
-    Orbeji\UnusedActions\NusedRoutes::class => ['all' => true],
+    Orbeji\UnusedRoutes\UnusedRoutesBundle::class => ['all' => true],
 ];
 ```
