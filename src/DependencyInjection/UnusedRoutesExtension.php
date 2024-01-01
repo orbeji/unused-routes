@@ -22,11 +22,9 @@ class UnusedRoutesExtension extends Extension implements ConfigurationInterface
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('services.yaml');
 
-        $configuration = new Configuration(false);
+        $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
-        foreach ($config as $key => $value) {
-            $container->setParameter('unused_routes.' . $key, $value);
-        }
+        $container->setParameter('unused_routes.file_path', $config['file_path']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): ?ConfigurationInterface

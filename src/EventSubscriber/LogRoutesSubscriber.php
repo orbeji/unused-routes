@@ -10,12 +10,12 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 final class LogRoutesSubscriber implements EventSubscriberInterface
 {
-   private string $dir;
+    private string $dir;
 
-   public function __construct(ParameterBagInterface $parameterBag)
-   {
+    public function __construct(ParameterBagInterface $parameterBag)
+    {
         $this->dir = $parameterBag->get('unused_routes.file_path');
-   }
+    }
 
     /**
      * @return string[]
@@ -31,7 +31,7 @@ final class LogRoutesSubscriber implements EventSubscriberInterface
     {
         $request = $controllerEvent->getRequest();
         $route = $request->get('_route');
-        if ($route === null) {
+        if ($route === null || str_starts_with($route, '_')) {
             return;
         }
         $this->storeUsedAction($route);
