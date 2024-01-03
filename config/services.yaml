@@ -7,4 +7,4 @@ services:
       - { name: kernel.event_subscriber }
   Orbeji\UnusedRoutes\Command\RouteUsageCommand:
     autowire: true
-    tags: console.command
+    tags: [console.command]
