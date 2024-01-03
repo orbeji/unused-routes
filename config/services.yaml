@@ -7,5 +7,5 @@ services:
       - { name: kernel.event_subscriber }
   Orbeji\UnusedRoutes\Command\RouteUsageCommand:
     autowire: true
-    arguments: ['%unused_routes.file_path%']
+    arguments: ['%unused_routes.file_path%', '@router.default']
     tags: [console.command]
