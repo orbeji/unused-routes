@@ -32,6 +32,7 @@ class RouteUsageCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $showAll = $input->getOption('show-all');
+
         $usedRoutes = $this->getUsedRoutes();
         $allRoutes = $this->getAllRouteNames();
         $unusedRoutes = $this->getRoutesUsageResult($usedRoutes, $allRoutes, $showAll);
@@ -98,8 +99,8 @@ class RouteUsageCommand extends Command
 
     private function printResult(array $unusedRoutes, InputInterface $input, OutputInterface $output): void
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->table(
+        $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle->table(
             ['Route', '#Uses'],
             $unusedRoutes
         );
