@@ -26,17 +26,15 @@ class RouteUsageCommand extends Command
 
     protected function configure(): void
     {
-        $this->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically');
+        $this->addOption('show-all', 'a', null, 'Show all routes in results');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        //read all used routes
+        $showAll = $input->getOption('show-all');
         $usedRoutes = $this->getUsedRoutes();
-        //obtain all available routes
         $allRoutes = $this->getAllRouteNames();
-        //remove used routes from all available ones
-        $unusedRoutes = $this->getUnusedRoutes($usedRoutes, $allRoutes);
+        $unusedRoutes = $this->getRoutesUsageResult($usedRoutes, $allRoutes, $showAll);
 
         $this->printResult($unusedRoutes, $input, $output);
 
@@ -45,7 +43,18 @@ class RouteUsageCommand extends Command
 
     private function getUsedRoutes(): array
     {
-        return file($this->unusedRoutesFilePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $usedRoutes = file($this->unusedRoutesFilePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $valueCounts = array_count_values($usedRoutes);
+
+        // Format the data into an array with value and count of appearances
+        $groupedArray = [];
+        foreach ($valueCounts as $value => $count) {
+            $groupedArray[$value] = [
+                'value' => $value,
+                'count' => $count,
+            ];
+        }
+        return $groupedArray;
     }
 
     public function getAllRouteNames(): array
@@ -54,32 +63,45 @@ class RouteUsageCommand extends Command
 
         $routeNames = [];
         foreach ($routeCollection->all() as $routeName => $route) {
-            $routeNames[] = $routeName;
+            if (!str_starts_with($routeName, '_')) {
+                $routeNames[] = $routeName;
+            }
         }
 
         return $routeNames;
     }
 
-    private function getUnusedRoutes(array $usedRoutes, array $allRoutes): array
+    private function getRoutesUsageResult(array $usedRoutes, array $allRoutes, bool $showAll): array
     {
         $unusedRoutes = array();
         foreach ($allRoutes as $route) {
-            if (!in_array($route, $usedRoutes)) {
-                $unusedRoutes[] = $route;
+            if ($showAll && $this->existRouteInArray($route, $usedRoutes)) {
+                $unusedRoutes[] = $usedRoutes[$route];
+            } elseif (!$this->existRouteInArray($route, $usedRoutes)) {
+                $unusedRoutes[] = [$route, 0];
             }
         }
         return $unusedRoutes;
     }
 
+    private function existRouteInArray(string $route, array $usedRoutes): bool
+    {
+        $valueExists = false;
+        foreach ($usedRoutes as $item) {
+            if ($item['value'] === $route) {
+                $valueExists = true;
+                break;
+            }
+        }
+        return $valueExists;
+    }
+
     private function printResult(array $unusedRoutes, InputInterface $input, OutputInterface $output): void
     {
-        global $input;
         $io = new SymfonyStyle($input, $output);
-
         $io->table(
-            ['Route'],
+            ['Route', '#Uses'],
             $unusedRoutes
         );
-
     }
 }
