@@ -14,7 +14,7 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
     }
     public function addRoute(string $route): void
     {
-        FileHelper::writeLine($this->unusedRoutesFilePath, $route);
+        FileHelper::writeLine($route, $this->unusedRoutesFilePath);
     }
 
     public function getRoutesUsage(): array
