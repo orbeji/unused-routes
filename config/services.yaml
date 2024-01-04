@@ -1,13 +1,11 @@
 services:
   orbeji_unusedroutes.usage_route_provider:
-    private: true
     class: Orbeji\UnusedRoutes\Provider\FileUsageRouterProvider
     arguments: ['%unused_routes.file_path%']
 
   Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface: '@orbeji_unusedroutes.usage_route_provider'
 
   orbeji_unusedroutes.log_routes_subscriber:
-    private: true
     class: Orbeji\UnusedRoutes\EventSubscriber\LogRoutesSubscriber
     arguments: ['@Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface']
     tags:
