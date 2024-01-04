@@ -3,7 +3,6 @@
 namespace Orbeji\UnusedRoutes\DependencyInjection;
 
 use Exception;
-use Symfony\Bundle\FrameworkBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -11,8 +10,9 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use function assert;
 
-class UnusedRoutesExtension extends Extension implements ConfigurationInterface
+final class UnusedRoutesExtension extends Extension implements ConfigurationInterface
 {
     /**
      * @throws Exception
@@ -37,7 +37,7 @@ class UnusedRoutesExtension extends Extension implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('unused_routes');
 
         $rootNode = $treeBuilder->getRootNode();
-        \assert($rootNode instanceof ArrayNodeDefinition);
+        assert($rootNode instanceof ArrayNodeDefinition);
 
         $rootNode
             ->children()

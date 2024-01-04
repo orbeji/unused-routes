@@ -2,19 +2,18 @@
 
 namespace Orbeji\UnusedRoutes\EventSubscriber;
 
-use Orbeji\UnusedRoutes\Helper\FileHelper;
+use Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 final class LogRoutesSubscriber implements EventSubscriberInterface
 {
-    private string $dir;
+    private UsageRouteProviderInterface $usageRouteProvider;
 
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(UsageRouteProviderInterface $usageRouteProvider)
     {
-        $this->dir = $parameterBag->get('unused_routes.file_path');
+        $this->usageRouteProvider = $usageRouteProvider;
     }
 
     /**
@@ -34,11 +33,6 @@ final class LogRoutesSubscriber implements EventSubscriberInterface
         if ($route === null || str_starts_with($route, '_')) {
             return;
         }
-        $this->storeUsedAction($route);
-    }
-
-    private function storeUsedAction(string $route): void
-    {
-        FileHelper::writeLine($this->dir, $route);
+        $this->usageRouteProvider->addRoute($route);
     }
 }

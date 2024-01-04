@@ -2,6 +2,7 @@
 
 namespace Orbeji\UnusedRoutes\Command;
 
+use Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,15 +14,15 @@ use Symfony\Component\Routing\RouterInterface;
     name: 'unused-routes:list',
     description: 'List all unused routes'
 )]
-class RouteUsageCommand extends Command
+final class RouteUsageCommand extends Command
 {
-    private string $unusedRoutesFilePath;
     private RouterInterface $router;
+    private UsageRouteProviderInterface $usageRouteProvider;
 
-    public function __construct(string $unusedRoutesFilePath, RouterInterface $router) {
+    public function __construct(UsageRouteProviderInterface $usageRouteProvider, RouterInterface $router) {
         parent::__construct();
-        $this->unusedRoutesFilePath = $unusedRoutesFilePath;
         $this->router = $router;
+        $this->usageRouteProvider = $usageRouteProvider;
     }
 
     protected function configure(): void
@@ -33,29 +34,13 @@ class RouteUsageCommand extends Command
     {
         $showAll = $input->getOption('show-all');
 
-        $usedRoutes = $this->getUsedRoutes();
+        $usedRoutes = $this->usageRouteProvider->getRoutesUsage();
         $allRoutes = $this->getAllRouteNames();
         $unusedRoutes = $this->getRoutesUsageResult($usedRoutes, $allRoutes, $showAll);
 
         $this->printResult($unusedRoutes, $input, $output);
 
         return self::SUCCESS;
-    }
-
-    private function getUsedRoutes(): array
-    {
-        $usedRoutes = file($this->unusedRoutesFilePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $valueCounts = array_count_values($usedRoutes);
-
-        // Format the data into an array with value and count of appearances
-        $groupedArray = [];
-        foreach ($valueCounts as $value => $count) {
-            $groupedArray[$value] = [
-                'value' => $value,
-                'count' => $count,
-            ];
-        }
-        return $groupedArray;
     }
 
     public function getAllRouteNames(): array

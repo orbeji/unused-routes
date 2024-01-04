@@ -1,17 +1,5 @@
 # UnusedRoutes
 
-## TODO
-- [ ] Write a log file per day
-- [ ] Add tests
-- [ ] Add pipelines
-    - [ ] Check style
-    - [ ] Run Tests
-    - [ ] Coverage check
-    - [ ] Phpstan
-- [ ] Improve Readme with description and usage
-- [ ] See it its possible to autocreate a bundle config file when installing
-- [ ] Add configuration to replace how we store/read logs
-
 ## Installation
 
 Make sure Composer is installed globally, as explained in the
@@ -50,3 +38,15 @@ return [
     Orbeji\UnusedRoutes\UnusedRoutesBundle::class => ['all' => true],
 ];
 ```
+
+## TODO
+- [ ] Write a log file per day
+- [ ] Add tests
+- [ ] Add pipelines
+  - [ ] Check style
+  - [ ] Run Tests
+  - [ ] Coverage check
+  - [ ] Phpstan
+- [ ] Improve Readme with description and usage
+- [ ] See if it's possible to autogenerate a bundle config file when installing
+- [ ] Add configuration to replace how we store/read logs
