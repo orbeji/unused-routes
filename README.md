@@ -39,8 +39,8 @@ return [
 ];
 ```
 
-## TODO
-- [ ] Write a log file per day
+## TODO 
+- [x] Write a log file per day
 - [ ] Add tests
 - [ ] Add pipelines
   - [ ] Check style
