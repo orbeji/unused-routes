@@ -1,7 +1,7 @@
 services:
   orbeji_unusedroutes.usage_route_provider:
     class: Orbeji\UnusedRoutes\Provider\FileUsageRouterProvider
-    arguments: ['%unused_routes.file_path%']
+    arguments: ['%unused_routes.file_path%', '%unused_routes.file_name%']
 
   Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface: '@orbeji_unusedroutes.usage_route_provider'
 

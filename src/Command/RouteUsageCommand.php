@@ -5,6 +5,8 @@ namespace Orbeji\UnusedRoutes\Command;
 use Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableCellStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -19,7 +21,8 @@ final class RouteUsageCommand extends Command
     private RouterInterface $router;
     private UsageRouteProviderInterface $usageRouteProvider;
 
-    public function __construct(UsageRouteProviderInterface $usageRouteProvider, RouterInterface $router) {
+    public function __construct(UsageRouteProviderInterface $usageRouteProvider, RouterInterface $router)
+    {
         parent::__construct();
         $this->router = $router;
         $this->usageRouteProvider = $usageRouteProvider;
@@ -64,7 +67,7 @@ final class RouteUsageCommand extends Command
             if ($showAll && $this->existRouteInArray($route, $usedRoutes)) {
                 $unusedRoutes[] = $usedRoutes[$route];
             } elseif (!$this->existRouteInArray($route, $usedRoutes)) {
-                $unusedRoutes[] = [$route, 0];
+                $unusedRoutes[] = ['value' => $route, 'count' => 0];
             }
         }
         return $unusedRoutes;
@@ -85,9 +88,23 @@ final class RouteUsageCommand extends Command
     private function printResult(array $unusedRoutes, InputInterface $input, OutputInterface $output): void
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
+        $rows = [];
+        foreach ($unusedRoutes as $unusedRoute) {
+            if ($unusedRoute['count'] === 0) {
+                $rows[] = [
+                    new TableCell($unusedRoute['value'], ['style' => new TableCellStyle(['fg' => 'red',])]),
+                    new TableCell($unusedRoute['count'], ['style' => new TableCellStyle(['fg' => 'red',])]),
+                ];
+            } else {
+                $rows[] = [
+                    new TableCell($unusedRoute['value'], ['style' => new TableCellStyle(['fg' => 'green',])]),
+                    new TableCell($unusedRoute['count'], ['style' => new TableCellStyle(['fg' => 'green',])]),
+                ];
+            }
+        }
         $symfonyStyle->table(
             ['Route', '#Uses'],
-            $unusedRoutes
+            $rows
         );
     }
 }

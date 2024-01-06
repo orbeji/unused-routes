@@ -25,6 +25,7 @@ final class UnusedRoutesExtension extends Extension implements ConfigurationInte
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
         $container->setParameter('unused_routes.file_path', $config['file_path']);
+        $container->setParameter('unused_routes.file_name', $config['file_name']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): ?ConfigurationInterface
@@ -41,7 +42,8 @@ final class UnusedRoutesExtension extends Extension implements ConfigurationInte
 
         $rootNode
             ->children()
-                ->scalarNode('file_path')->defaultValue('/var/log/unused_routes.log')->end()
+                ->scalarNode('file_path')->defaultValue('/var/log')->end()
+                ->scalarNode('file_name')->defaultValue('accessed_routes.log')->end()
             ->end()
         ;
 
