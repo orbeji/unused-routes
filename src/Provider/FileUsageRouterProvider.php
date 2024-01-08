@@ -2,6 +2,7 @@
 
 namespace Orbeji\UnusedRoutes\Provider;
 
+use Orbeji\UnusedRoutes\Entity\UsedRoute;
 use Orbeji\UnusedRoutes\Helper\FileHelper;
 
 final class FileUsageRouterProvider implements UsageRouteProviderInterface
@@ -15,9 +16,18 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
         $this->unusedRoutesFileName = $unusedRoutesFileName;
     }
 
-    public function addRoute(string $route): void
+    public function addRoute(UsedRoute $route): void
     {
-        FileHelper::writeLine($route, $this->getFilePath());
+        FileHelper::writeLine($this->transformToLine($route), $this->getFilePath());
+    }
+
+    /**
+     * @param UsedRoute $route
+     * @return string
+     */
+    public function transformToLine(UsedRoute $route): string
+    {
+        return $route->getRoute() . ';' . $route->getTimestamp();
     }
 
     /**
@@ -29,28 +39,52 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
         return $this->unusedRoutesFilePath . DIRECTORY_SEPARATOR . $unusedRoutesFileName;
     }
 
+    /**
+     * @return UsedRoute[]
+     */
     public function getRoutesUsage(): array
     {
         $files = $this->getFiles();
 
         $usedRoutes = [];
         foreach ($files as $file) {
-            $usedRoutes[] = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $fileContent = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($fileContent as $line) {
+                // Assuming the line contains route and timestamp separated by a delimiter (e.g., ";")
+                $parts = explode(';', $line);
+                if (count($parts) === 2) {
+                    $route = trim($parts[0]);
+                    $timestamp = trim($parts[1]);
 
+                    // Store route as key and update timestamp if it exists or add a new entry
+                    if (array_key_exists($route, $usedRoutes)) {
+                        $usedRoutes[$route]['timestamp'] = $timestamp;
+                    } else {
+                        $usedRoutes[$route] = [
+                            'value' => $route,
+                            'timestamp' => $timestamp,
+                            'count' => 0, // Initialize count to 0
+                        ];
+                    }
+
+                    // Increment count for the route
+                    $usedRoutes[$route]['count']++;
+                }
+            }
         }
-
-        $usedRoutes = array_merge(...$usedRoutes);
-        $valueCounts = array_count_values($usedRoutes);
-
+        // Convert $usedRoutes to the final grouped array format
         $groupedArray = [];
-        foreach ($valueCounts as $value => $count) {
-            $groupedArray[$value] = [
-                'value' => $value,
-                'count' => $count,
-            ];
+        foreach ($usedRoutes as $data) {
+            $groupedArray[] = UsedRoute::fromArray([
+                'route' => $data['value'],
+                'timestamp' => $data['timestamp'],
+                'visits' => $data['count'],
+            ]);
         }
+
         return $groupedArray;
     }
+
 
     private function getFiles(): array
     {
@@ -58,7 +92,7 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
         $files = glob($this->unusedRoutesFilePath . DIRECTORY_SEPARATOR . $unusedRoutesFileName);
 
         $matchPattern = str_replace('.', '\d{4}\d{2}\d{2}\.', $this->unusedRoutesFileName);
-        $matchPattern = '/^'.$matchPattern.'$/';
+        $matchPattern = '/^' . $matchPattern . '$/';
         $matchedFiles = [];
         foreach ($files as $file) {
             $filename = basename($file);

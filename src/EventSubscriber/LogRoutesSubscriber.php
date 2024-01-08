@@ -2,6 +2,7 @@
 
 namespace Orbeji\UnusedRoutes\EventSubscriber;
 
+use Orbeji\UnusedRoutes\Entity\UsedRoute;
 use Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -33,6 +34,6 @@ final class LogRoutesSubscriber implements EventSubscriberInterface
         if ($route === null || str_starts_with($route, '_')) {
             return;
         }
-        $this->usageRouteProvider->addRoute($route);
+        $this->usageRouteProvider->addRoute(UsedRoute::newVisit($route));
     }
 }

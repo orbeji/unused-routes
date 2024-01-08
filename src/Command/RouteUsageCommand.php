@@ -2,6 +2,7 @@
 
 namespace Orbeji\UnusedRoutes\Command;
 
+use Orbeji\UnusedRoutes\Entity\UsedRoute;
 use Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -39,9 +40,9 @@ final class RouteUsageCommand extends Command
 
         $usedRoutes = $this->usageRouteProvider->getRoutesUsage();
         $allRoutes = $this->getAllRouteNames();
-        $unusedRoutes = $this->getRoutesUsageResult($usedRoutes, $allRoutes, $showAll);
+        $routesUsage = $this->getRoutesUsageResult($usedRoutes, $allRoutes, $showAll);
 
-        $this->printResult($unusedRoutes, $input, $output);
+        $this->printResult($routesUsage, $input, $output);
 
         return self::SUCCESS;
     }
@@ -60,50 +61,66 @@ final class RouteUsageCommand extends Command
         return $routeNames;
     }
 
+    /**
+     * @param UsedRoute[] $usedRoutes
+     * @param array $allRoutes
+     * @param bool $showAll
+     * @return array
+     */
     private function getRoutesUsageResult(array $usedRoutes, array $allRoutes, bool $showAll): array
     {
         $unusedRoutes = array();
         foreach ($allRoutes as $route) {
-            if ($showAll && $this->existRouteInArray($route, $usedRoutes)) {
-                $unusedRoutes[] = $usedRoutes[$route];
-            } elseif (!$this->existRouteInArray($route, $usedRoutes)) {
-                $unusedRoutes[] = ['value' => $route, 'count' => 0];
+            $existRouteInArray = $this->existRouteInArray($route, $usedRoutes);
+            if ($showAll && $existRouteInArray) {
+                $unusedRoutes[] = [
+                    'value' => $existRouteInArray->getRoute(),
+                    'count' => $existRouteInArray->getVisits(),
+                    'date' => date('d/m/Y', $existRouteInArray->getTimestamp()),
+                ];
+            } elseif (!$existRouteInArray) {
+                $unusedRoutes[] = ['value' => $route, 'count' => 0, 'date' => '-'];
             }
         }
         return $unusedRoutes;
     }
 
-    private function existRouteInArray(string $route, array $usedRoutes): bool
+    /**
+     * @param string $route
+     * @param UsedRoute[] $usedRoutes
+     * @return UsedRoute|bool
+     */
+    private function existRouteInArray(string $route, array $usedRoutes): UsedRoute|bool
     {
-        $valueExists = false;
-        foreach ($usedRoutes as $item) {
-            if ($item['value'] === $route) {
-                $valueExists = true;
-                break;
+        foreach ($usedRoutes as $usedRoute) {
+            if ($usedRoute->getRoute() === $route) {
+                return $usedRoute;
             }
         }
-        return $valueExists;
+        return false;
     }
 
-    private function printResult(array $unusedRoutes, InputInterface $input, OutputInterface $output): void
+    private function printResult(array $routesUsage, InputInterface $input, OutputInterface $output): void
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
         $rows = [];
-        foreach ($unusedRoutes as $unusedRoute) {
-            if ($unusedRoute['count'] === 0) {
+        foreach ($routesUsage as $routeUsage) {
+            if ($routeUsage['count'] === 0) {
                 $rows[] = [
-                    new TableCell($unusedRoute['value'], ['style' => new TableCellStyle(['fg' => 'red',])]),
-                    new TableCell($unusedRoute['count'], ['style' => new TableCellStyle(['fg' => 'red',])]),
+                    new TableCell($routeUsage['value'], ['style' => new TableCellStyle(['fg' => 'red',])]),
+                    new TableCell($routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'red',])]),
+                    new TableCell($routeUsage['date'], ['style' => new TableCellStyle(['fg' => 'red',])]),
                 ];
             } else {
                 $rows[] = [
-                    new TableCell($unusedRoute['value'], ['style' => new TableCellStyle(['fg' => 'green',])]),
-                    new TableCell($unusedRoute['count'], ['style' => new TableCellStyle(['fg' => 'green',])]),
+                    new TableCell($routeUsage['value'], ['style' => new TableCellStyle(['fg' => 'green',])]),
+                    new TableCell($routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'green',])]),
+                    new TableCell($routeUsage['date'], ['style' => new TableCellStyle(['fg' => 'green',])]),
                 ];
             }
         }
         $symfonyStyle->table(
-            ['Route', '#Uses'],
+            ['Route', '#Uses', 'Last access'],
             $rows
         );
     }
