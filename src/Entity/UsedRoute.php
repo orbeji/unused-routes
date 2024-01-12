@@ -22,9 +22,9 @@ class UsedRoute
         return new self($route, time(), 1);
     }
 
-    public static function fromArray(array $data): self
+    public static function fromGroupedData(string $route, int $timestamp, int $visits): self
     {
-        return new self($data['route'], $data['timestamp'], $data['visits']);
+        return new self($route, $timestamp, $visits);
     }
 
     public function getRoute(): string

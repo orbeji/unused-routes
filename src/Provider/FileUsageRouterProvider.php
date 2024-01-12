@@ -33,7 +33,7 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
     /**
      * @return string
      */
-    public function getFilePath(): string
+    private function getFilePath(): string
     {
         $unusedRoutesFileName = str_replace('.', date('Ymd') . '.', $this->unusedRoutesFileName);
         return $this->unusedRoutesFilePath . DIRECTORY_SEPARATOR . $unusedRoutesFileName;
@@ -50,7 +50,7 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
         foreach ($files as $file) {
             $fileContent = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($fileContent as $line) {
-                // Assuming the line contains route and timestamp separated by a delimiter (e.g., ";")
+                // Assuming the line contains route and timestamp separated by a delimiter
                 $parts = explode(';', $line);
                 if (count($parts) === 2) {
                     $route = trim($parts[0]);
@@ -75,11 +75,7 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
         // Convert $usedRoutes to the final grouped array format
         $groupedArray = [];
         foreach ($usedRoutes as $data) {
-            $groupedArray[] = UsedRoute::fromArray([
-                'route' => $data['value'],
-                'timestamp' => $data['timestamp'],
-                'visits' => $data['count'],
-            ]);
+            $groupedArray[] = UsedRoute::fromGroupedData($data['value'], $data['timestamp'], $data['count']);
         }
 
         return $groupedArray;
