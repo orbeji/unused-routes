@@ -19,7 +19,7 @@ final class UnusedRoutesExtension extends Extension implements ConfigurationInte
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');
 
         $configuration = $this->getConfiguration($configs, $container);

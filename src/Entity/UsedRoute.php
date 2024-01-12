@@ -41,5 +41,4 @@ class UsedRoute
     {
         return $this->visits;
     }
-
 }

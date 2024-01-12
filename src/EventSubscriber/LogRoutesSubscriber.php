@@ -7,7 +7,6 @@ use Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
 use Webmozart\Assert\Assert;
 
 use function PHPUnit\Framework\assertIsString;

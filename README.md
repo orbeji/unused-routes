@@ -41,12 +41,12 @@ return [
 
 ## TODO 
 - [x] Write a log file per day
-- [ ] Add tests
+- [x] Add tests
 - [ ] Add pipelines
   - [ ] Check style
   - [ ] Run Tests
   - [ ] Coverage check
-  - [ ] Phpstan
+  - [x] Phpstan
 - [ ] Improve Readme with description and usage
 - [ ] See if it's possible to autogenerate a bundle config file when installing
 - [ ] Add configuration to replace how we store/read logs
