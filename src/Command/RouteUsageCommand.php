@@ -32,7 +32,7 @@ final class RouteUsageCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $showAllRoutes = $input->getOption('show-all-routes');
+        $showAllRoutes = (bool)$input->getOption('show-all-routes');
 
         $routesUsage = $this->routeUsageHelper->getRoutesUsage($showAllRoutes);
 
@@ -41,6 +41,12 @@ final class RouteUsageCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @param array<int, array{value: string, count: int, date: string}> $routesUsage
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     */
     private function printResult(array $routesUsage, InputInterface $input, OutputInterface $output): void
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
@@ -49,13 +55,13 @@ final class RouteUsageCommand extends Command
             if ($routeUsage['count'] === 0) {
                 $rows[] = [
                     new TableCell($routeUsage['value'], ['style' => new TableCellStyle(['fg' => 'red',])]),
-                    new TableCell($routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'red',])]),
+                    new TableCell((string)$routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'red',])]),
                     new TableCell($routeUsage['date'], ['style' => new TableCellStyle(['fg' => 'red',])]),
                 ];
             } else {
                 $rows[] = [
                     new TableCell($routeUsage['value'], ['style' => new TableCellStyle(['fg' => 'green',])]),
-                    new TableCell($routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'green',])]),
+                    new TableCell((string)$routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'green',])]),
                     new TableCell($routeUsage['date'], ['style' => new TableCellStyle(['fg' => 'green',])]),
                 ];
             }

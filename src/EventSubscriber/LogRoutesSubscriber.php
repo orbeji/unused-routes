@@ -8,6 +8,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+use Webmozart\Assert\Assert;
+
+use function PHPUnit\Framework\assertIsString;
+
 final class LogRoutesSubscriber implements EventSubscriberInterface
 {
     private UsageRouteProviderInterface $usageRouteProvider;
@@ -30,8 +34,9 @@ final class LogRoutesSubscriber implements EventSubscriberInterface
     public function onController(ControllerEvent $controllerEvent): void
     {
         $request = $controllerEvent->getRequest();
-        $route = $request->get('_route');
-        if ($route === null || str_starts_with($route, '_')) {
+        $route = $request->get('_route', '');
+        Assert::string($route);
+        if ($route === '' || str_starts_with($route, '_')) {
             return;
         }
         $this->usageRouteProvider->addRoute(UsedRoute::newVisit($route));

@@ -48,13 +48,13 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
 
         $usedRoutes = [];
         foreach ($files as $file) {
-            $fileContent = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $fileContent = FileHelper::readContents($file);
             foreach ($fileContent as $line) {
                 // Assuming the line contains route and timestamp separated by a delimiter
                 $parts = explode(';', $line);
                 if (count($parts) === 2) {
                     $route = trim($parts[0]);
-                    $timestamp = trim($parts[1]);
+                    $timestamp = (int)trim($parts[1]);
 
                     // Store route as key and update timestamp if it exists or add a new entry
                     if (array_key_exists($route, $usedRoutes)) {
@@ -81,11 +81,13 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
         return $groupedArray;
     }
 
-
+    /**
+     * @return array<int, string>
+     */
     private function getFiles(): array
     {
         $unusedRoutesFileName = str_replace('.', '*.', $this->unusedRoutesFileName);
-        $files = glob($this->unusedRoutesFilePath . DIRECTORY_SEPARATOR . $unusedRoutesFileName);
+        $files = FileHelper::readGlob($this->unusedRoutesFilePath, $unusedRoutesFileName);
 
         $matchPattern = str_replace('.', '\d{4}\d{2}\d{2}\.', $this->unusedRoutesFileName);
         $matchPattern = '/^' . $matchPattern . '$/';

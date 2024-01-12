@@ -10,7 +10,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use function assert;
+use Webmozart\Assert\Assert;
 
 final class UnusedRoutesExtension extends Extension implements ConfigurationInterface
 {
@@ -38,12 +38,16 @@ final class UnusedRoutesExtension extends Extension implements ConfigurationInte
         $treeBuilder = new TreeBuilder('unused_routes');
 
         $rootNode = $treeBuilder->getRootNode();
-        assert($rootNode instanceof ArrayNodeDefinition);
+        Assert::isInstanceOf($rootNode, ArrayNodeDefinition::class);
 
         $rootNode
             ->children()
-                ->scalarNode('file_path')->defaultValue('/var/log')->end()
-                ->scalarNode('file_name')->defaultValue('accessed_routes.log')->end()
+                ->scalarNode('file_path')
+                    ->defaultValue('/var/log')
+                ->end()
+                ->scalarNode('file_name')
+                    ->defaultValue('accessed_routes.log')
+                ->end()
             ->end()
         ;
 

@@ -8,5 +8,8 @@ interface UsageRouteProviderInterface
 {
     public function addRoute(UsedRoute $route): void;
 
+    /**
+     * @return UsedRoute[]
+     */
     public function getRoutesUsage(): array;
 }

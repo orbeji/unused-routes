@@ -17,6 +17,10 @@ class RouteUsageHelper
         $this->router = $router;
     }
 
+    /**
+     * @param bool $showAllRoutes
+     * @return array<int, array{value: string, count: int, date: string}>
+     */
     public function getRoutesUsage(bool $showAllRoutes): array
     {
         $usedRoutes = $this->usageRouteProvider->getRoutesUsage();
@@ -24,6 +28,9 @@ class RouteUsageHelper
         return $this->getRoutesUsageResult($usedRoutes, $allRoutes, $showAllRoutes);
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getAllRouteNames(): array
     {
         $routeCollection = $this->router->getRouteCollection();
@@ -38,9 +45,9 @@ class RouteUsageHelper
 
     /**
      * @param UsedRoute[] $usedRoutes
-     * @param array $allRoutes
+     * @param array<int, string> $allRoutes
      * @param bool $showAll
-     * @return array
+     * @return array<int, array{value: string, count: int, date: string}>
      */
     private function getRoutesUsageResult(
         array $usedRoutes,
@@ -50,7 +57,7 @@ class RouteUsageHelper
         $unusedRoutes = array();
         foreach ($allRoutes as $route) {
             $existRouteInArray = $this->existRouteInArray($route, $usedRoutes);
-            if ($showAll && $existRouteInArray) {
+            if ($showAll && $existRouteInArray instanceof UsedRoute) {
                 $unusedRoutes[] = [
                     'value' => $existRouteInArray->getRoute(),
                     'count' => $existRouteInArray->getVisits(),
