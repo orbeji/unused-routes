@@ -11,7 +11,11 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  orbeji_unusedroutes.route_usage_helper:
+    class: Orbeji\UnusedRoutes\Helper\RouteUsageHelper
+    arguments: ['@Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface', '@router.default']
+
   orbeji_unusedroutes.route_usage_command:
     class: Orbeji\UnusedRoutes\Command\RouteUsageCommand
-    arguments: ['@Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface', '@router.default']
+    arguments: ['@orbeji_unusedroutes.route_usage_helper']
     tags: [console.command]

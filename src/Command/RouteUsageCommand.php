@@ -43,9 +43,6 @@ final class RouteUsageCommand extends Command
 
     /**
      * @param array<int, array{value: string, count: int, date: string}> $routesUsage
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return void
      */
     private function printResult(array $routesUsage, InputInterface $input, OutputInterface $output): void
     {

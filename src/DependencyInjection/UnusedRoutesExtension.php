@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Webmozart\Assert\Assert;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class UnusedRoutesExtension extends Extension implements ConfigurationInterface
 {
     /**

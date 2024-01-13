@@ -25,7 +25,7 @@ final class FileUsageRouterProvider implements UsageRouteProviderInterface
      * @param UsedRoute $route
      * @return string
      */
-    public function transformToLine(UsedRoute $route): string
+    private function transformToLine(UsedRoute $route): string
     {
         return $route->getRoute() . ';' . $route->getTimestamp();
     }

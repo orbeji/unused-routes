@@ -43,7 +43,7 @@ return [
 - [x] Write a log file per day
 - [x] Add tests
 - [ ] Add pipelines
-  - [ ] Check style
+  - [x] Check style
   - [ ] Run Tests
   - [ ] Coverage check
   - [x] Phpstan
