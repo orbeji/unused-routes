@@ -21,7 +21,7 @@ jobs:
         uses: ramsey/composer-install@v2
 
       - name: PHPStan
-        run: phpstan analyze --no-progress --error-format=checkstyle | cs2pr
+        run: phpstan analyze src/ --level=9 --no-progress --error-format=checkstyle | cs2pr
 
   phpcs:
     name: PhpCS
