@@ -23,23 +23,22 @@ jobs:
       - name: PHPStan
         run: phpstan analyze --no-progress --error-format=checkstyle | cs2pr
 
-  php-cs-fixer:
-    name: PHP-CS-Fixer
+  phpcs:
+    name: PhpCS
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Composer install
+        uses: php-actions/composer@v6
+
+      - name: PHP Code Sniffer
+        uses: php-actions/phpcs@v1
         with:
-          php-version: 8.3
-          coverage: none
-          tools: php-cs-fixer:3, cs2pr
-
-      - name: PHP-CS-Fixer
-        run: php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
+          php_version: 8.3
+          path: src/
+          standard: psr12
 
   composer-normalize:
     name: Composer Normalize
