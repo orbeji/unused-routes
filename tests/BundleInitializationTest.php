@@ -2,9 +2,17 @@
 
 namespace Orbeji\UnusedRoutes\Tests;
 
+use Orbeji\UnusedRoutes\Command\RouteUsageCommand;
+use Orbeji\UnusedRoutes\EventSubscriber\LogRoutesSubscriber;
+use Orbeji\UnusedRoutes\Helper\RouteUsageHelper;
+use Orbeji\UnusedRoutes\Provider\FileUsageRouterProvider;
+use Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface;
 use Orbeji\UnusedRoutes\UnusedRoutesBundle;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Nyholm\BundleTest\TestKernel;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class BundleInitializationTest extends KernelTestCase
@@ -28,33 +36,26 @@ class BundleInitializationTest extends KernelTestCase
 
     public function testInitBundle(): void
     {
-        // Boot the kernel.
         $kernel = self::bootKernel();
+        $bundle = $kernel->getBundle('UnusedRoutesBundle');
+        self::assertInstanceOf(BundleInterface::class, $bundle);
 
-        // Get the container
-        $container = $kernel->getContainer();
+         $container = self::getContainer();
 
-        // Or for FrameworkBundle@^5.3.6 to access private services without the PublicCompilerPass
-        // $container = self::getContainer();
+        $this->assertTrue($container->has('orbeji_unusedroutes.route_usage_command'));
+        $service = $container->get('orbeji_unusedroutes.route_usage_command');
+        $this->assertInstanceOf(RouteUsageCommand::class, $service);
 
-        // Test if your services exists
-        dump($container);
         $this->assertTrue($container->has('orbeji_unusedroutes.usage_route_provider'));
         $service = $container->get('orbeji_unusedroutes.usage_route_provider');
-        $this->assertInstanceOf(\Orbeji\UnusedRoutes\Provider\UsageRouteProviderInterface::class, $service);
-    }
+        $this->assertInstanceOf(FileUsageRouterProvider::class, $service);
 
-    public function testBundleWithDifferentConfiguration(): void
-    {
-        // Boot the kernel with a config closure, the handleOptions call in createKernel is important for that to work
-        $kernel = self::bootKernel(['config' => static function(TestKernel $kernel){
-            // Add some other bundles we depend on
-            $kernel->addTestBundle(OtherBundle::class);
+        $this->assertTrue($container->has('orbeji_unusedroutes.log_routes_subscriber'));
+        $service = $container->get('orbeji_unusedroutes.log_routes_subscriber');
+        $this->assertInstanceOf(LogRoutesSubscriber::class, $service);
 
-            // Add some configuration
-            $kernel->addTestConfig(__DIR__.'/config.yml');
-        }]);
-
-        // ...
+        $this->assertTrue($container->has('orbeji_unusedroutes.route_usage_helper'));
+        $service = $container->get('orbeji_unusedroutes.route_usage_helper');
+        $this->assertInstanceOf(RouteUsageHelper::class, $service);
     }
 }
