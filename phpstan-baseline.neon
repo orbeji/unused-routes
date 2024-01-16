@@ -1,11 +1,3 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Method Orbeji\\\\UnusedRoutes\\\\DependencyInjection\\\\UnusedRoutesExtension\\:\\:getConfiguration\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/DependencyInjection/UnusedRoutesExtension.php
 
-		-
-			message: "#^Parameter \\#1 \\$configuration of method Symfony\\\\Component\\\\DependencyInjection\\\\Extension\\\\Extension\\:\\:processConfiguration\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\ConfigurationInterface, Symfony\\\\Component\\\\Config\\\\Definition\\\\ConfigurationInterface\\|null given\\.$#"
-			count: 1
-			path: src/DependencyInjection/UnusedRoutesExtension.php

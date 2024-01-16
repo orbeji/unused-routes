@@ -9,7 +9,6 @@ use Webmozart\Assert\Assert;
 
 class Configuration implements ConfigurationInterface
 {
-
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('unused_routes');
@@ -20,13 +19,12 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
             ->scalarNode('file_path')
-            ->defaultValue('/var/log')
+            ->defaultValue('%kernel.logs_dir%')
             ->end()
             ->scalarNode('file_name')
             ->defaultValue('accessed_routes.log')
             ->end()
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }
