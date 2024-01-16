@@ -1,0 +1,3 @@
+unused_routes:
+  file_path: '%kernel.logs_dir%'
+  file_name: 'accessed_routes.log'
