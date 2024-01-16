@@ -42,10 +42,10 @@ return [
 ## TODO 
 - [x] Write a log file per day
 - [x] Add tests
-- [ ] Add pipelines
+- [x] Add pipelines
   - [x] Check style
-  - [ ] Run Tests
-  - [ ] Coverage check
+  - [x] Run Tests
+  - [x] Coverage check
   - [x] Phpstan
 - [ ] Improve Readme with description and usage
 - [ ] See if it's possible to autogenerate a bundle config file when installing
