@@ -1,19 +1,25 @@
-name: PhpUnit
+name: PHPUnit and Coverage Check
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - uses: php-actions/composer@v6
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
 
-      - name: PHPUnit Tests
-        uses: php-actions/phpunit@master
-        with:
-          version: 10.5.5
-          bootstrap: vendor/autoload.php
-          configuration: phpunit.xml.dist
+    - name: Install dependencies
+      run: composer install
+
+    - name: Run PHPUnit with coverage
+      run: vendor/bin/phpunit --coverage-clover clover.xml
+
+    - name: Coverage check
+      run: vendor/bin/coverage-check clover.xml 100
