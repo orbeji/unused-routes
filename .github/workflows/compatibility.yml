@@ -14,6 +14,9 @@ jobs:
         operating-system: [ 'ubuntu-22.04' ]
         php: [ '8.1', '8.2', '8.3' ]
         symfony: [ '6.4.*', '7.0.*']
+        exclude:
+        - php: '8.1'
+          symfony: '7.0.*'
     steps:
       - uses: actions/checkout@v4
 
