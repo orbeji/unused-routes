@@ -14,9 +14,11 @@ class RouteUsageHelperTest extends TestCase
 {
     public function testEmpty(): void
     {
+        $router = $this->createStub(RouterInterface::class);
+        $router->method('getRouteCollection')->willReturn(new RouteCollection());
         $routeUsageHelper = new RouteUsageHelper(
             $this->createStub(UsageRouteProviderInterface::class),
-            $this->createStub(RouterInterface::class)
+            $router
         );
 
         $result = $routeUsageHelper->getRoutesUsage(false);
