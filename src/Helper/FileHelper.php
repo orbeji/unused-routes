@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Orbeji\UnusedRoutes\Helper;
 
 use Webmozart\Assert\Assert;
-
-use function PHPUnit\Framework\assertIsArray;
 
 final class FileHelper
 {

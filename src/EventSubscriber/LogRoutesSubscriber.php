@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Orbeji\UnusedRoutes\EventSubscriber;
 
@@ -8,8 +8,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Webmozart\Assert\Assert;
-
-use function PHPUnit\Framework\assertIsString;
 
 final class LogRoutesSubscriber implements EventSubscriberInterface
 {
