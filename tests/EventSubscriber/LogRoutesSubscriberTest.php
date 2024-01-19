@@ -23,6 +23,25 @@ class LogRoutesSubscriberTest extends TestCase
         $this->provider = new FileUsageRouterProvider($this->filePath, 'usedRoutes.txt');
     }
 
+    public function testOnControllerNooute()
+    {
+        $subscriber = new LogRoutesSubscriber($this->provider);
+        $request = $this->createStub(Request::class);
+        $route = null;
+        $request->method('get')->willReturn($route);
+        $controllerEvent = new ControllerEvent(
+            $this->createStub(HttpKernelInterface::class),
+            function(){},
+            $request,
+            1
+        );
+        $subscriber->onController($controllerEvent);
+
+        $routes = $this->provider->getRoutesUsage();
+
+        $this->assertCount(0, $routes);
+    }
+
     public function testOnControllerValidRoute()
     {
         $subscriber = new LogRoutesSubscriber($this->provider);
