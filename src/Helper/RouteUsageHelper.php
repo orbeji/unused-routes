@@ -59,14 +59,14 @@ class RouteUsageHelper
         $unusedRoutes = array();
         foreach ($allRoutes as $route) {
             $existRouteInArray = $this->existRouteInArray($route, $usedRoutes);
-            if ($showAll && $existRouteInArray instanceof UsedRoute) {
+            if (!$existRouteInArray) {
+                $unusedRoutes[] = ['value' => $route, 'count' => 0, 'date' => '-'];
+            } elseif ($showAll && $existRouteInArray instanceof UsedRoute) {
                 $unusedRoutes[] = [
                     'value' => $existRouteInArray->getRoute(),
                     'count' => $existRouteInArray->getVisits(),
                     'date' => date('d/m/Y', $existRouteInArray->getTimestamp()),
                 ];
-            } elseif (!$existRouteInArray) {
-                $unusedRoutes[] = ['value' => $route, 'count' => 0, 'date' => '-'];
             }
         }
 

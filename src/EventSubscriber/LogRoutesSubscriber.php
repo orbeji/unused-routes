@@ -34,7 +34,9 @@ final class LogRoutesSubscriber implements EventSubscriberInterface
     {
         $request = $controllerEvent->getRequest();
         $route = $request->get('_route', '');
-        Assert::string($route);
+        if (!is_string($route)) {
+            return;
+        }
         if ($route === '' || str_starts_with($route, '_')) {
             return;
         }

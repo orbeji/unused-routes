@@ -52,22 +52,27 @@ final class RouteUsageCommand extends Command
         $rows = [];
         foreach ($routesUsage as $routeUsage) {
             if ($routeUsage['count'] === 0) {
-                $rows[] = [
-                    new TableCell($routeUsage['value'], ['style' => new TableCellStyle(['fg' => 'red',])]),
-                    new TableCell((string)$routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'red',])]),
-                    new TableCell($routeUsage['date'], ['style' => new TableCellStyle(['fg' => 'red',])]),
-                ];
+                $rows[] = $this->addRow($routeUsage, 'red');
             } else {
-                $rows[] = [
-                    new TableCell($routeUsage['value'], ['style' => new TableCellStyle(['fg' => 'green',])]),
-                    new TableCell((string)$routeUsage['count'], ['style' => new TableCellStyle(['fg' => 'green',])]),
-                    new TableCell($routeUsage['date'], ['style' => new TableCellStyle(['fg' => 'green',])]),
-                ];
+                $rows[] = $this->addRow($routeUsage, 'green');
             }
         }
         $symfonyStyle->table(
             ['Route', '#Uses', 'Last access'],
             $rows
         );
+    }
+
+    /**
+     * @param array{value: string, count: int, date: string} $routeUsage
+     * @return TableCell[]
+     */
+    private function addRow(array $routeUsage, string $color): array
+    {
+        return [
+            new TableCell($routeUsage['value'], ['style' => new TableCellStyle(['fg' => $color,])]),
+            new TableCell((string)$routeUsage['count'], ['style' => new TableCellStyle(['fg' => $color,])]),
+            new TableCell($routeUsage['date'], ['style' => new TableCellStyle(['fg' => $color,])]),
+        ];
     }
 }
