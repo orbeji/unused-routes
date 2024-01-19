@@ -5,7 +5,9 @@
 <br />
 <div align="center">
 <h1 align="center">Unused Routes</h1>
-
+![](https://github.com/orbeji/unused-routes/actions/workflows/tests.yml/badge.svg)
+![](https://github.com/orbeji/unused-routes/actions/workflows/static.yml/badge.svg)
+![](https://github.com/orbeji/unused-routes/actions/workflows/compatibility.yml/badge.svg)
   <p align="center">
     <a href="https://github.com/orbeji/unused-routes/issues">Report Bug</a>
     ·
